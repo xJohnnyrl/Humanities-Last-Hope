@@ -17,6 +17,7 @@ public class GameManager : MonoBehaviour
     public event Action OnWaveStarted;
     public event Action OnWaveEnded;
     public event Action OnEnterShop;
+    public event Action OnStatsChanged;
 
     private void Awake()
     {
@@ -48,6 +49,7 @@ public class GameManager : MonoBehaviour
     public void DamagePlayer(int dmg)
     {
         health -= dmg;
+        OnStatsChanged?.Invoke();
         if (health <= 0) {/* handle game over */}
     }
 
@@ -55,9 +57,12 @@ public class GameManager : MonoBehaviour
     {
         if (coins < amount) return false;
         coins -= amount;
+        OnStatsChanged?.Invoke();
         return true;
     }
 
-    public void EarnCoins(int amount) => coins += amount;
-
+    public void EarnCoins(int amount){
+        coins += amount;
+        OnStatsChanged?.Invoke();
+    }
 }

@@ -43,6 +43,7 @@ public class Enemy : MonoBehaviour
             index++;
             if (index >= WaveManager.I.checkpoints.Length)
             {
+                GameManager.I.DamagePlayer(1);
                 Destroy(gameObject);
                 return;
             }
@@ -73,6 +74,7 @@ public class Enemy : MonoBehaviour
         isDying = true;
         rb.linearVelocity = Vector2.zero;
         anim.SetTrigger("Die");
+        GameManager.I.EarnCoins(1);
         StartCoroutine(DestroyAfterDeath());
     }
 
