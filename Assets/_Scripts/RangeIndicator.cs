@@ -12,12 +12,20 @@ public class RangeIndicator : MonoBehaviour
 
     [HideInInspector] public float radius = 3f;
 
+    [Tooltip("Optional: if you want the circle to center somewhere other than this transform's pivot, drop a child here.")]
+    public Transform rangeOrigin;
+
     private LineRenderer lr;
+    private Vector3      centerOffset;
 
     void Awake()
     {
-        // grab or add the LineRenderer
         lr = GetComponent<LineRenderer>();
+
+        centerOffset = rangeOrigin != null 
+            ? rangeOrigin.localPosition 
+            : Vector3.zero;
+
         lr.useWorldSpace = false;    // so positions are local to the tower
         lr.loop          = true;
         lr.positionCount = segments + 1;
@@ -31,12 +39,14 @@ public class RangeIndicator : MonoBehaviour
 
     public void DrawCircle()
     {
-        float angleStep = 360f / segments;
+        if (lr == null) return;
+
+        float step = 360f / segments;
         for (int i = 0; i <= segments; i++)
         {
-            float ang   = Mathf.Deg2Rad * angleStep * i;
-            Vector3 pos = new Vector3(Mathf.Cos(ang), Mathf.Sin(ang)) * radius;
-            lr.SetPosition(i, pos);
+            float a = Mathf.Deg2Rad * step * i;
+            Vector3 p = new Vector3(Mathf.Cos(a), Mathf.Sin(a)) * radius;
+            lr.SetPosition(i, p + centerOffset);
         }
     }
 

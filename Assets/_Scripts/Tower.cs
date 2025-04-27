@@ -67,33 +67,32 @@ public class Tower : MonoBehaviour
 Enemy FindNearestEnemy()
 {
     // Grab all colliders in range (no mask)
-    Collider2D[] hits = Physics2D.OverlapCircleAll(
-        transform.position,
-        range
-    );
+        Vector2 center = (rangeIndicator.rangeOrigin != null)
+            ? (Vector2)rangeIndicator.rangeOrigin.position
+            : (Vector2)transform.position;
 
-    Enemy nearest  = null;
-    float  bestSq  = float.MaxValue;
+        Collider2D[] hits = Physics2D.OverlapCircleAll(center, range);
 
-    foreach (var hit in hits)
-    {
-        // only consider things tagged “Enemy”
-        if (!hit.CompareTag("Enemy"))
-            continue;
+        Enemy  nearest = null;
+        float  bestSq  = float.MaxValue;
 
-        Enemy e = hit.GetComponent<Enemy>();
-        if (e == null)  // in case the tag is on some child without the script
-            continue;
-
-        float sq = (e.transform.position - transform.position).sqrMagnitude;
-        if (sq < bestSq)
+        foreach (var hit in hits)
         {
-            bestSq  = sq;
-            nearest = e;
-        }
-    }
+            if (!hit.CompareTag("Enemy")) continue;
 
-    return nearest;
+            Enemy e = hit.GetComponent<Enemy>() 
+                   ?? hit.GetComponentInParent<Enemy>();
+            if (e == null) continue;
+
+            float sq = (e.transform.position - (Vector3)center).sqrMagnitude;
+            if (sq < bestSq)
+            {
+                bestSq  = sq;
+                nearest = e;
+            }
+        }
+
+        return nearest;
 }
 
     void Shoot(Enemy target)
@@ -120,11 +119,17 @@ Enemy FindNearestEnemy()
     // visualize range in the editor
     void OnDrawGizmosSelected()
     {
+        if (rangeIndicator == null) return;
+
+        Vector3 center = (rangeIndicator.rangeOrigin != null)
+            ? rangeIndicator.rangeOrigin.position
+            : transform.position;
+
         Gizmos.color = Color.yellow;
-        Gizmos.DrawWireSphere(transform.position, range);
+        Gizmos.DrawWireSphere(center, rangeIndicator.radius);
     }
 
-        void OnMouseDown()
+    void OnMouseDown()
     {
         // toggle ring on click
         if (rangeIndicator != null)
