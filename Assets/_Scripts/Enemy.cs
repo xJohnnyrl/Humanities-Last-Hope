@@ -71,19 +71,17 @@ public class Enemy : MonoBehaviour
     private void Die()
     {
         isDying = true;
-        rb.linearVelocity = Vector2.zero;        // stop moving
-        anim.SetTrigger("Die");            // fire your transition
-        StartCoroutine( DestroyAfterDeath() );
+        rb.linearVelocity = Vector2.zero;
+        anim.SetTrigger("Die");
+        StartCoroutine(DestroyAfterDeath());
     }
 
     private IEnumerator DestroyAfterDeath()
     {
-        // wait for the dying animation length
-        var info = anim.GetCurrentAnimatorStateInfo(0);
-        float delay = info.length;
-        // in case the state just changed, you might also sample the clip length directly:
-        // delay = anim.runtimeAnimatorController.animationClips
-        //     .First(c => c.name == "YourDyingClipName").length;
+        float delay = 0f;
+        foreach (var clip in anim.runtimeAnimatorController.animationClips)
+            if (clip.name == "Dying")
+                delay = clip.length;
         yield return new WaitForSeconds(delay);
         Destroy(gameObject);
     }
@@ -99,4 +97,5 @@ public class Enemy : MonoBehaviour
     {
         TakeDamage(maxHealth);
     }
+
 }

@@ -4,8 +4,8 @@ public class Projectile : MonoBehaviour
 {
     public float speed = 5f;
 
-    Enemy target;
-    int   damage;
+    private Enemy target;
+    private int   damage;
 
     public void Initialize(Enemy target, int damage)
     {
@@ -15,25 +15,27 @@ public class Projectile : MonoBehaviour
 
     void Update()
     {
-        if (target == null)
-        {
-            Destroy(gameObject);
-            return;
-        }
+    if (target == null) { Destroy(gameObject); return; }
 
-        // move toward the target
-        Vector3 dir = (target.transform.position - transform.position).normalized;
-        transform.position += dir * speed * Time.deltaTime;
+    Vector3 start = transform.position;
+    Vector3 end   = target.transform.position;
+    float  step  = speed * Time.deltaTime;
 
-        // optional: rotate to face flight direction
-        float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
-        transform.rotation = Quaternion.Euler(0, 0, angle);
+    transform.position = Vector3.MoveTowards(start, end, step);
 
-        // collision check by distance
-        if (Vector3.Distance(transform.position, target.transform.position) < 0.1f)
-        {
-            target.TakeDamage(damage);
-            Destroy(gameObject);
-        }
+    // optional: rotate to face movement
+    Vector3 dir = end - start;
+    float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
+    transform.rotation = Quaternion.Euler(0, 0, angle);
+    }
+
+    void OnTriggerEnter2D(Collider2D other)
+    {
+        // only react to real enemies
+        var e = other.GetComponent<Enemy>();
+        if (e == null) return;
+
+        e.TakeDamage(damage);
+        Destroy(gameObject);
     }
 }
