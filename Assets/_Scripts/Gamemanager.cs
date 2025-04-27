@@ -12,7 +12,7 @@ public class GameManager : MonoBehaviour
 
     [Header("Wave Settings")]
     public int currentWave = 0;
-    public float spawnInterval = 0.5f;
+    public float spawnInterval = 10f;
 
     public event Action OnWaveStarted;
     public event Action OnWaveEnded;
@@ -59,4 +59,5 @@ public class GameManager : MonoBehaviour
     }
 
     public void EarnCoins(int amount) => coins += amount;
+
 }
