@@ -4267,6 +4267,8 @@ MonoBehaviour:
   cardLayer:
     serializedVersion: 2
     m_Bits: 1048576
+  hoverCursor: {fileID: 2800000, guid: 7803f319bfa9c614293c64e0353d6082, type: 3}
+  hoverHotspot: {x: 0, y: 0}
 --- !u!1 &521778526
 GameObject:
   m_ObjectHideFlags: 0
@@ -7419,7 +7421,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: 376.70526, y: -35.89275}
-  m_SizeDelta: {x: 0, y: 71.7855}
+  m_SizeDelta: {x: 200.5439, y: 71.7855}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1014848692
 MonoBehaviour:
