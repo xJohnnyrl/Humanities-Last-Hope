@@ -4127,6 +4127,7 @@ GameObject:
   - component: {fileID: 519420029}
   - component: {fileID: 519420030}
   - component: {fileID: 519420033}
+  - component: {fileID: 519420034}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -4269,6 +4270,22 @@ MonoBehaviour:
     m_Bits: 1048576
   hoverCursor: {fileID: 2800000, guid: 7803f319bfa9c614293c64e0353d6082, type: 3}
   hoverHotspot: {x: 0, y: 0}
+--- !u!114 &519420034
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 519420028}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 56666c5a40171f54783dd416a44f42bf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_EventMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_MaxRayIntersections: 0
 --- !u!1 &521778526
 GameObject:
   m_ObjectHideFlags: 0
@@ -6344,6 +6361,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cardPrefab: {fileID: 8379371370881106241, guid: 4893dc71db599ea4f84554d238f678e7,
     type: 3}
+  cardPrefabs:
+  - {fileID: 5549180084010960845, guid: 4893dc71db599ea4f84554d238f678e7, type: 3}
   splineContainer: {fileID: 1376766029}
   spawnPoint: {fileID: 1573498049}
   maxHandSize: 20
@@ -7421,7 +7440,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: 376.70526, y: -35.89275}
-  m_SizeDelta: {x: 200.5439, y: 71.7855}
+  m_SizeDelta: {x: 0, y: 71.7855}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1014848692
 MonoBehaviour:
@@ -19036,6 +19055,8 @@ MonoBehaviour:
   validColor: {r: 0, g: 1, b: 0, a: 0.5}
   invalidColor: {r: 1, g: 0, b: 0, a: 0.5}
   isPlacing: 0
+  lastTowerPrefab: {fileID: 0}
+  lastPreviewPrefab: {fileID: 0}
 --- !u!1 &1867227551
 GameObject:
   m_ObjectHideFlags: 0

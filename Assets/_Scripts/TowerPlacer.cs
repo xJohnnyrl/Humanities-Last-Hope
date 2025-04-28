@@ -22,6 +22,9 @@ public class TowerPlacer : MonoBehaviour
     private Vector3Int lastCellPos;
     [HideInInspector] public bool isPlacing = false;
 
+    [HideInInspector] public GameObject lastTowerPrefab;
+    [HideInInspector] public GameObject lastPreviewPrefab;
+
 
 void Start()
 {
@@ -45,6 +48,8 @@ void Start()
         {
             isPlacing = false;
             previewInstance.SetActive(false);
+            Debug.Log("👉 Canceling Placement!");
+            CancelPlacement();
         }
 
         if (isPlacing)
@@ -96,6 +101,9 @@ void Start()
 
     public void StartPlacement(GameObject tower, GameObject preview)
     {
+        lastTowerPrefab   = tower;
+        lastPreviewPrefab = preview;
+
         towerPrefab   = tower;
         previewPrefab = preview;
         isPlacing     = true;
@@ -111,5 +119,15 @@ void Start()
         }
 
         previewInstance.SetActive(true);
+    }
+
+    public void CancelPlacement()
+    {
+        // give the card back
+        if (HandManager.I != null && lastTowerPrefab != null)
+            HandManager.I.ReturnCard(lastTowerPrefab, lastPreviewPrefab);
+
+        // clear remembered so you don’t return twice
+        lastTowerPrefab = lastPreviewPrefab = null;
     }
 }

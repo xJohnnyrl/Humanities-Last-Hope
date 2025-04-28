@@ -1,84 +1,115 @@
 using System.Collections.Generic;
-using System.Numerics;
-using DG.Tweening;
 using UnityEngine;
 using UnityEngine.Splines;
-using UnityEngine.UI;
-using UnityEngine.Rendering; 
+using UnityEngine.Rendering;  // for SortingGroup
+using DG.Tweening;
 
 public class HandManager : MonoBehaviour
 {
-    [Tooltip("Drag your CardPrefab here")]
+    public static HandManager I { get; private set; }
+
+    [Header("Card Setup")]
+    [Tooltip("This is your generic card prefab used by ReceiveCard()")]
     [SerializeField] private GameObject cardPrefab;
+    [Tooltip("All your different card prefabs (with Card component)")]
+    [SerializeField] private Card[] cardPrefabs;
+
+    [Header("Hand Layout")]
     [SerializeField] private SplineContainer splineContainer;
     [SerializeField] private Transform spawnPoint;
-    [SerializeField] private int maxHandSize;
+    [SerializeField] private int maxHandSize = 5;
+    [Tooltip("Sorting order for the first card; next cards increment by +1")]
     [SerializeField] private int cardBaseOrder = 20;
 
-    private List<GameObject> cardsInHand = new();
+    private readonly List<GameObject> cardsInHand = new();
+
+    void Awake()
+    {
+        I = this;
+        if (spawnPoint == null)
+            Debug.LogError("HandManager ▶ spawnPoint is NOT assigned!");
+    }
 
     void Start()
     {
-        receiveCard();
+        ReceiveCard();
     }
 
-    void Update()
+    public void ReceiveCard()
     {
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            receiveCard();
-        }
-    }
-
-    void receiveCard(){
         if (cardsInHand.Count >= maxHandSize) return;
 
+        // 1) instantiate the generic prefab
         GameObject card = Instantiate(cardPrefab, spawnPoint.position, spawnPoint.rotation);
         cardsInHand.Add(card);
+
+        // 2) assign its sorting order
         var sg = card.GetComponent<SortingGroup>();
         if (sg != null)
             sg.sortingOrder = cardBaseOrder + (cardsInHand.Count - 1);
+        Debug.LogWarning($"Updating card position, {cardsInHand.Count} cards in hand");
+
+        // 3) re-layout
         UpdateCardPosition();
     }
 
-private void UpdateCardPosition()
-{
-    if (cardsInHand.Count == 0) return;
-
-    float cardSpacing = 1f / cardsInHand.Count;
-    float firstT      = 0.5f - (cardsInHand.Count - 1) * cardSpacing / 2f;
-    Spline spline     = splineContainer.Spline;
-    Transform scTrans = splineContainer.transform;
-
-    for (int i = 0; i < cardsInHand.Count; i++)
+    /// <summary>
+    /// Call this to give the user back the exact card they cancelled.
+    /// </summary>
+    public void ReturnCard(GameObject towerPre, GameObject previewPre)
     {
-        float t = firstT + i * cardSpacing;
+        foreach (var cp in cardPrefabs)
+        {
+            if (cp.towerPrefab == towerPre 
+             && cp.previewPrefab == previewPre)
+            {
+                // swap in the correct prefab and re-use ReceiveCard()
+                cardPrefab = cp.gameObject;
+                ReceiveCard();
+                return;
+            }
+        }
 
-        // 1) get the local-space position on the spline
-        UnityEngine.Vector3 localPos = spline.EvaluatePosition(t);
-        // 2) convert that to world-space
-        UnityEngine.Vector3 worldPos = scTrans.TransformPoint(localPos);
+        Debug.LogWarning($"HandManager: no card prefab found for tower {towerPre.name}");
+    }
 
-        // 3) likewise for rotation if you care
-        UnityEngine.Vector3 localTangent = spline.EvaluateTangent(t);
-        UnityEngine.Vector3 localUp      = spline.EvaluateUpVector(t);
-        UnityEngine.Vector3 worldForward = scTrans.TransformDirection(localTangent);
-        UnityEngine.Vector3 worldUp      = scTrans.TransformDirection(localUp);
-        UnityEngine.Quaternion worldRot  = UnityEngine.Quaternion.LookRotation(
-                                  worldUp,
-                                  UnityEngine.Vector3.Cross(worldUp, worldForward).normalized
-                              );
+    private void UpdateCardPosition()
+    {
+        cardsInHand.RemoveAll(c => c == null);
 
-        // 4) tween the card into the correct world position
-        cardsInHand[i].transform
-           .DOMove(worldPos, 0.25f)
-           .SetEase(Ease.OutQuad);
-        cardsInHand[i].transform
-           .DORotateQuaternion(worldRot, 0.25f)
-           .SetEase(Ease.OutQuad);
+        if (cardsInHand.Count == 0) return;
+
+        float spacing  = 1f / cardsInHand.Count;
+        float firstT   = 0.5f - (cardsInHand.Count - 1) * spacing / 2f;
+        var   spline   = splineContainer.Spline;
+        var   scTrans  = splineContainer.transform;
+
+        for (int i = 0; i < cardsInHand.Count; i++)
+        {
+            float t = firstT + i * spacing;
+
+            // local → world transform
+            Vector3 localPos = spline.EvaluatePosition(t);
+            Vector3 worldPos = scTrans.TransformPoint(localPos);
+
+            // rotation if desired
+            Vector3 localT = spline.EvaluateTangent(t);
+            Vector3 localU = spline.EvaluateUpVector(t);
+            Vector3 worldF = scTrans.TransformDirection(localT);
+            Vector3 worldU = scTrans.TransformDirection(localU);
+            Quaternion worldRot = Quaternion.LookRotation(
+                worldU,
+                Vector3.Cross(worldU, worldF).normalized
+            );
+
+            // tween each card  
+            var tf = cardsInHand[i].transform;
+            tf.DOMove(worldPos, 0.25f).SetEase(Ease.OutQuad);
+            tf.DORotateQuaternion(worldRot, 0.25f).SetEase(Ease.OutQuad);
+        }
     }
 }
-}
+
 
 // using System.Collections.Generic;
 // using System.Numerics;
