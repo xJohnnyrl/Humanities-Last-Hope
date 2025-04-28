@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 6298161053889587724}
   - component: {fileID: 4067328133057864163}
   - component: {fileID: -8515179462609966499}
-  m_Layer: 5
+  m_Layer: 20
   m_Name: CardPrefab
   m_TagString: Untagged
   m_Icon: {fileID: 0}
