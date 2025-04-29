@@ -80,7 +80,7 @@ public IEnumerator SpawnWave(int enemyCount, float enemySpeed, float spawnInterv
 
             enemiesSpawned++;
 
-            yield return new WaitForSeconds(1.5f); // ✅ small delay between enemies in batch
+            yield return new WaitForSeconds(.75f); // ✅ small delay between enemies in batch
         }
     }
 
@@ -144,7 +144,7 @@ private void UpdateAvailableEnemies()
 private float GetHpMultiplier()
 {
     int wave = GameManager.I.currentWave;
-    return Mathf.Pow(1.5f, wave / 2);
+    return Mathf.Pow(1.5f, wave / 3);
 }
 
 private float GetSpeedMultiplier()
