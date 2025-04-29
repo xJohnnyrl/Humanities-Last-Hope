@@ -9077,35 +9077,35 @@ MonoBehaviour:
     damage: 1
   - prefab: {fileID: 6529875494186789099, guid: 389bf462276a4694e811b550731f5e17,
       type: 3}
-    rewardCoins: 5
+    rewardCoins: 3
     damage: 5
   - prefab: {fileID: 1342168018174965323, guid: 404e9862ac674ce4a873c9b8058ce078,
       type: 3}
-    rewardCoins: 10
+    rewardCoins: 5
     damage: 8
   - prefab: {fileID: 3861341231914115416, guid: 9d42c99367351524bb31a9023cc93723,
       type: 3}
-    rewardCoins: 3
+    rewardCoins: 1
     damage: 1
   - prefab: {fileID: 1990811707843542108, guid: 90688cd279c7a12458f8ebe73b28e012,
       type: 3}
-    rewardCoins: 10
+    rewardCoins: 3
     damage: 4
   - prefab: {fileID: 6731329448615813140, guid: 09defc1ca9ed49041a7572919d219b69,
       type: 3}
-    rewardCoins: 15
+    rewardCoins: 5
     damage: 7
   - prefab: {fileID: 8980577180478362952, guid: eac4640a93b369d4d9f0e9860b20a490,
       type: 3}
-    rewardCoins: 5
+    rewardCoins: 1
     damage: 2
   - prefab: {fileID: 2275786454701627228, guid: 214c03c57db723543a65a2dc4fbafbc1,
       type: 3}
-    rewardCoins: 20
+    rewardCoins: 3
     damage: 5
   - prefab: {fileID: 7114506880819460613, guid: d2551c295f92fb94795d62008b2e7652,
       type: 3}
-    rewardCoins: 40
+    rewardCoins: 5
     damage: 9
   enemyContainer: {fileID: 1784998555}
   allEnemies:
@@ -9115,35 +9115,35 @@ MonoBehaviour:
     damage: 1
   - prefab: {fileID: 6529875494186789099, guid: 389bf462276a4694e811b550731f5e17,
       type: 3}
-    rewardCoins: 5
+    rewardCoins: 3
     damage: 5
   - prefab: {fileID: 1342168018174965323, guid: 404e9862ac674ce4a873c9b8058ce078,
       type: 3}
-    rewardCoins: 10
+    rewardCoins: 5
     damage: 8
   - prefab: {fileID: 3861341231914115416, guid: 9d42c99367351524bb31a9023cc93723,
       type: 3}
-    rewardCoins: 3
+    rewardCoins: 1
     damage: 1
   - prefab: {fileID: 1990811707843542108, guid: 90688cd279c7a12458f8ebe73b28e012,
       type: 3}
-    rewardCoins: 10
+    rewardCoins: 3
     damage: 4
   - prefab: {fileID: 6731329448615813140, guid: 09defc1ca9ed49041a7572919d219b69,
       type: 3}
-    rewardCoins: 15
+    rewardCoins: 5
     damage: 7
   - prefab: {fileID: 8980577180478362952, guid: eac4640a93b369d4d9f0e9860b20a490,
       type: 3}
-    rewardCoins: 5
+    rewardCoins: 1
     damage: 2
   - prefab: {fileID: 2275786454701627228, guid: 214c03c57db723543a65a2dc4fbafbc1,
       type: 3}
-    rewardCoins: 20
+    rewardCoins: 3
     damage: 5
   - prefab: {fileID: 7114506880819460613, guid: d2551c295f92fb94795d62008b2e7652,
       type: 3}
-    rewardCoins: 40
+    rewardCoins: 5
     damage: 9
 --- !u!4 &821340198
 Transform:
