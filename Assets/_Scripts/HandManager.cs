@@ -8,6 +8,11 @@ public class HandManager : MonoBehaviour
 {
     public static HandManager I { get; private set; }
 
+    [Header("Sounds")]
+    [SerializeField] private AudioClip cardReceivedSFX;
+    private AudioSource audioSource;
+
+
     [Header("Card Setup")]
     [Tooltip("This is your generic card prefab used by ReceiveCard()")]
     [SerializeField] private GameObject cardPrefab;
@@ -28,6 +33,13 @@ public class HandManager : MonoBehaviour
         I = this;
         if (spawnPoint == null)
             Debug.LogError("HandManager ▶ spawnPoint is NOT assigned!");
+
+
+        audioSource = GetComponent<AudioSource>();
+        if (audioSource == null)
+        audioSource = gameObject.AddComponent<AudioSource>();
+
+
     }
 
     void Start()
@@ -64,6 +76,9 @@ public void ReceiveCard(Card cardData, GameObject prefabToSpawn)
 
     // 3) re-layout
     UpdateCardPosition();
+
+    if (cardReceivedSFX != null && audioSource != null)
+        audioSource.PlayOneShot(cardReceivedSFX);
 }
 
 
