@@ -144,7 +144,7 @@ private void UpdateAvailableEnemies()
 private float GetHpMultiplier()
 {
     int wave = GameManager.I.currentWave;
-    return Mathf.Pow(1.25f, wave / 3);
+    return Mathf.Pow(1.5f, wave / 2);
 }
 
 private float GetSpeedMultiplier()
