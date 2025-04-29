@@ -19,11 +19,13 @@ public class Enemy : MonoBehaviour
     private int rewardCoins = 1;
     private int damage = 1;
 
-    public void Init(float speed, int rewardCoins, int damage)
+    public void Init(float speed, int rewardCoins, int damage, float hpMultiplier)
     {
         this.speed = speed;
         this.rewardCoins = rewardCoins;
         this.damage = damage;
+        this.maxHealth = Mathf.RoundToInt(this.maxHealth * hpMultiplier); // ✅ scale HP
+        this.currentHealth = maxHealth;
     }
 
     void Awake()
