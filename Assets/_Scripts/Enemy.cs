@@ -61,10 +61,10 @@ public class Enemy : MonoBehaviour
         // move only—no rotation
         Vector2 dir = ((Vector2)checkpoint.position - (Vector2)transform.position).normalized;
         rb.linearVelocity = dir * speed;
-                if (dir.x < -0.01f)
+        if (dir.x < -0.01f)
             transform.localScale = new Vector3(-originalScaleX, transform.localScale.y, transform.localScale.z);
         else if (dir.x > 0.01f)
-            transform.localScale = new Vector3( originalScaleX, transform.localScale.y, transform.localScale.z);
+            transform.localScale = new Vector3(originalScaleX, transform.localScale.y, transform.localScale.z);
         bool walking = rb.linearVelocity.sqrMagnitude > 0.01f;
         anim.SetBool("isWalking", walking);
     }

@@ -128,7 +128,7 @@ private void UpdateAvailableEnemies()
 private float GetEnemyStatMultiplier()
 {
     int wave = GameManager.I.currentWave;
-    return Mathf.Pow(1.5f, wave / 5);
+    return Mathf.Pow(1.5f, wave / 2);
 }
 
 public void NotifyEnemyDeath(Enemy e)
