@@ -14,8 +14,3 @@ public class Card : MonoBehaviour
     public int cost;
     public Sprite artwork;
 }
-
-
-
-
-

@@ -5,9 +5,8 @@ using UnityEngine.UI;
 
 public class CardShop : MonoBehaviour
 {
-    [Header("References")]
     [SerializeField] private Card[] cardPrefabs;
-    [SerializeField] private GameObject uiCardPrefab; 
+    [SerializeField] private GameObject uiCardPrefab;
     [SerializeField] private Transform cardHolder;
     [SerializeField] private TMP_Text playerCoinsText;
     [SerializeField] private Button refreshButton;
@@ -16,8 +15,6 @@ public class CardShop : MonoBehaviour
     [SerializeField] private Button confirmYesButton;
     [SerializeField] private Button confirmNoButton;
     [SerializeField] private HandManager handManager;
-
-    [Header("Settings")]
     [SerializeField] private int refreshCost = 5;
     [SerializeField] private int cardsToSpawn = 3;
 
@@ -52,71 +49,64 @@ public class CardShop : MonoBehaviour
         SpawnCards();
     }
 
-private void SpawnCards()
-{
-    List<Card> availableCards = new List<Card>();
-
-    foreach (Card card in cardPrefabs)
+    private void SpawnCards()
     {
-        // Wave 0–10: Only Rare cards
-        if (GameManager.I.currentWave <= 10)
+        List<Card> availableCards = new List<Card>();
+
+        foreach (Card card in cardPrefabs)
         {
-            if (card.rarity == Rarity.Rare)
-                availableCards.Add(card);
-        }
-        // Wave 11–20: Rare + Epic (higher chance for Epic)
-        else if (GameManager.I.currentWave <= 20)
-        {
-            if (card.rarity == Rarity.Rare || card.rarity == Rarity.Epic)
+            if (GameManager.I.currentWave <= 10)
             {
-                // Bias Epic cards to appear more often
-                if (card.rarity == Rarity.Epic)
-                    availableCards.Add(card); // Add twice for higher chance
-                availableCards.Add(card);
+                if (card.rarity == Rarity.Rare)
+                    availableCards.Add(card);
+            }
+            else if (GameManager.I.currentWave <= 20)
+            {
+                if (card.rarity == Rarity.Rare || card.rarity == Rarity.Epic)
+                {
+
+                    if (card.rarity == Rarity.Epic)
+                        availableCards.Add(card);
+                    availableCards.Add(card);
+                }
+            }
+            else
+            {
+                if (card.rarity == Rarity.Rare || card.rarity == Rarity.Epic || card.rarity == Rarity.Legendary)
+                {
+                    if (card.rarity == Rarity.Legendary)
+                        availableCards.Add(card);
+                    availableCards.Add(card);
+                }
             }
         }
-        // Wave 21+: Rare + Epic + Legendary (higher chance for Legendary)
-        else
+
+        if (availableCards.Count == 0)
         {
-            if (card.rarity == Rarity.Rare || card.rarity == Rarity.Epic || card.rarity == Rarity.Legendary)
+            Debug.LogWarning("No available cards for the current wave settings!");
+            return;
+        }
+
+        for (int i = 0; i < availableCards.Count; i++)
+        {
+            int randomIndex = Random.Range(i, availableCards.Count);
+            (availableCards[i], availableCards[randomIndex]) = (availableCards[randomIndex], availableCards[i]);
+        }
+
+        for (int i = 0; i < cardsToSpawn && i < availableCards.Count; i++)
+        {
+            Card randomCard = availableCards[i];
+
+            GameObject uiCard = Instantiate(uiCardPrefab, cardHolder);
+            cardsInShop.Add(uiCard);
+
+            UICard uiCardComponent = uiCard.GetComponent<UICard>();
+            if (uiCardComponent != null)
             {
-                if (card.rarity == Rarity.Legendary)
-                    availableCards.Add(card); // Add twice for higher chance
-                availableCards.Add(card);
+                uiCardComponent.Setup(randomCard, this);
             }
         }
     }
-
-    if (availableCards.Count == 0)
-    {
-        Debug.LogWarning("No available cards for the current wave settings!");
-        return;
-    }
-
-    // Shuffle the available cards
-    for (int i = 0; i < availableCards.Count; i++)
-    {
-        int randomIndex = Random.Range(i, availableCards.Count);
-        (availableCards[i], availableCards[randomIndex]) = (availableCards[randomIndex], availableCards[i]);
-    }
-
-    // Spawn the cards
-    for (int i = 0; i < cardsToSpawn && i < availableCards.Count; i++)
-    {
-        Card randomCard = availableCards[i];
-
-        GameObject uiCard = Instantiate(uiCardPrefab, cardHolder);
-        cardsInShop.Add(uiCard);
-
-        UICard uiCardComponent = uiCard.GetComponent<UICard>();
-        if (uiCardComponent != null)
-        {
-            uiCardComponent.Setup(randomCard, this);
-        }
-    }
-}
-
-
 
     private void ClearCards()
     {
@@ -160,10 +150,8 @@ private void SpawnCards()
         UpdatePlayerCoinsUI();
         confirmPanel.SetActive(false);
 
-        // Add the card to the hand manager
         handManager.ReceiveCard(selectedCard, selectedCard.gameObject);
 
-        // Remove the card from the shop
         Destroy(selectedCardGO);
         cardsInShop.Remove(selectedCardGO);
     }

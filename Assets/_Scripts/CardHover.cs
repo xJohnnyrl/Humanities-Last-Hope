@@ -1,63 +1,50 @@
 using UnityEngine;
 using DG.Tweening;
-using UnityEngine.Rendering; // for SortingGroup
+using UnityEngine.Rendering;
 
 [RequireComponent(typeof(Collider2D), typeof(SortingGroup))]
 public class CardHover : MonoBehaviour
 {
-    [Tooltip("How far above its current Y to lift")]
-    public float hoverHeight   = 0.5f;
-    [Tooltip("Seconds to tween up/down")]
-    public float hoverDuration = 0.2f;
-    [Tooltip("Temporary sortingOrder on hover")]
-    public int   hoverOrder    = 1000;
+  public float hoverHeight = 0.5f;
+  public float hoverDuration = 0.2f;
+  public int hoverOrder = 1000;
+  float baseY;
+  bool isLifted = false;
+  SortingGroup sg;
+  int originalOrder;
 
-    float        baseY;
-    bool         isLifted    = false;
-    SortingGroup sg;
-    int          originalOrder;
+  void Awake()
+  {
+    sg = GetComponent<SortingGroup>();
+    originalOrder = sg.sortingOrder;
+  }
 
-    void Awake()
-    {
-        sg            = GetComponent<SortingGroup>();
-        originalOrder = sg.sortingOrder;
-    }
+  public void Hover()
+  {
+    if (isLifted) return;
+    isLifted = true;
 
-    /// <summary>
-    /// Call this to simulate OnMouseEnter.
-    /// </summary>
-    public void Hover()
-    {
-        if (isLifted) return;
-        isLifted = true;
+    baseY = transform.position.y;
 
-        // record current Y (in case we've moved)
-        baseY = transform.position.y;
+    transform.DOKill();
 
-        // stop any tweens
-        transform.DOKill();
+    transform
+      .DOMoveY(baseY + hoverHeight, hoverDuration)
+      .SetEase(Ease.OutQuad);
 
-        // lift
-        transform
-          .DOMoveY(baseY + hoverHeight, hoverDuration)
-          .SetEase(Ease.OutQuad);
+    sg.sortingOrder = hoverOrder;
+  }
+  public void Unhover()
+  {
+    if (!isLifted) return;
+    isLifted = false;
 
-        // bring to front
-        sg.sortingOrder = hoverOrder;
-    }
-    public void Unhover()
-    {
-        if (!isLifted) return;
-        isLifted = false;
+    transform.DOKill();
 
-        transform.DOKill();
+    transform
+      .DOMoveY(baseY, hoverDuration)
+      .SetEase(Ease.OutQuad);
 
-        // drop back
-        transform
-          .DOMoveY(baseY, hoverDuration)
-          .SetEase(Ease.OutQuad);
-
-        // restore original layer
-        sg.sortingOrder = originalOrder;
-    }
+    sg.sortingOrder = originalOrder;
+  }
 }

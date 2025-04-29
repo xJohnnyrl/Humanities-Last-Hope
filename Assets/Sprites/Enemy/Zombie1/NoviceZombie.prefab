@@ -263,7 +263,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   EnemyDieSFX: {fileID: 8300000, guid: 41bce498ecc068f4bb321c68cd6e8c57, type: 3}
-  speed: 5
+  speed: 3
   maxHealth: 1
 --- !u!50 &-2952116757282034025
 Rigidbody2D:

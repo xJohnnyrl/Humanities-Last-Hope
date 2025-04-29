@@ -3,10 +3,9 @@ using UnityEngine;
 public class Projectile : MonoBehaviour
 {
     public float speed = 5f;
-    public bool rotateTowardsTarget = true;  // << ADD THIS
-
+    public bool rotateTowardsTarget = true;
     private Enemy target;
-    private int   damage;
+    private int damage;
 
     public void Initialize(Enemy target, int damage)
     {
@@ -19,8 +18,8 @@ public class Projectile : MonoBehaviour
         if (target == null) { Destroy(gameObject); return; }
 
         Vector3 start = transform.position;
-        Vector3 end   = target.transform.position;
-        float step    = speed * Time.deltaTime;
+        Vector3 end = target.transform.position;
+        float step = speed * Time.deltaTime;
 
         transform.position = Vector3.MoveTowards(start, end, step);
 

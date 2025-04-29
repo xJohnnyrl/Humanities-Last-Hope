@@ -13,11 +13,10 @@ public class NextWaveButton : MonoBehaviour
 
     private void Start()
     {
-        // ✅ Now GameManager.I should exist
         GameManager.I.OnWaveStarted += HideButton;
         GameManager.I.OnWaveEnded += ShowButton;
 
-        HideButton(); // Hide button at start
+        HideButton();
     }
 
     private void OnDestroy()

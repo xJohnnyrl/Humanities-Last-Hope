@@ -6,13 +6,8 @@ public class OpenShop : MonoBehaviour
 
     [SerializeField] private AudioClip pauseSFX;
     [SerializeField] private AudioClip unpauseSFX;
-
     [SerializeField] private AudioClip ShopSFX;
-
-
     [SerializeField] private AudioClip closeshopSFX;
-
-
     private AudioSource audioSource;
 
     void Awake()
@@ -27,39 +22,43 @@ public class OpenShop : MonoBehaviour
     [SerializeField] GameObject pause;
     [SerializeField] GameObject darkbackground;
 
-    public void ActiveShop(){
+    public void ActiveShop()
+    {
         shop.SetActive(true);
         darkbackground.SetActive(true);
         Time.timeScale = 0;
 
         if (ShopSFX != null && audioSource != null)
-        audioSource.PlayOneShot(ShopSFX);
+            audioSource.PlayOneShot(ShopSFX);
     }
-    public void CloseShop() {
+    public void CloseShop()
+    {
         shop.SetActive(false);
         darkbackground.SetActive(false);
         Time.timeScale = 1;
 
         if (closeshopSFX != null && audioSource != null)
-            audioSource.PlayOneShot(closeshopSFX);        
+            audioSource.PlayOneShot(closeshopSFX);
     }
 
-    public void OpenPauseMenu() {
+    public void OpenPauseMenu()
+    {
         pause.SetActive(true);
         darkbackground.SetActive(true);
         Time.timeScale = 0;
 
         if (pauseSFX != null && audioSource != null)
-        audioSource.PlayOneShot(pauseSFX);
+            audioSource.PlayOneShot(pauseSFX);
     }
-    public void ClosePauseMenu() {
-        
+    public void ClosePauseMenu()
+    {
+
         pause.SetActive(false);
         darkbackground.SetActive(false);
         Time.timeScale = 1;
 
         if (unpauseSFX != null && audioSource != null)
-        audioSource.PlayOneShot(unpauseSFX);
-        
+            audioSource.PlayOneShot(unpauseSFX);
+
     }
 }
