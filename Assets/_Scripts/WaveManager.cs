@@ -80,7 +80,7 @@ public IEnumerator SpawnWave(int enemyCount, float enemySpeed, float spawnInterv
 
             enemiesSpawned++;
 
-            yield return new WaitForSeconds(0.2f); // ✅ small delay between enemies in batch
+            yield return new WaitForSeconds(1.5f); // ✅ small delay between enemies in batch
         }
     }
 
