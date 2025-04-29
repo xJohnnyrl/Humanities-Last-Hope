@@ -5,6 +5,9 @@ public class Enemy : MonoBehaviour
 {
     public static Enemy I { get; private set; }
 
+    [SerializeField] private AudioClip EnemyDieSFX;
+    private AudioSource audioSource;
+
     [SerializeField] public float speed = 5f;
     [SerializeField] private int maxHealth = 3;
     private Rigidbody2D rb;
@@ -36,6 +39,10 @@ public class Enemy : MonoBehaviour
         currentHealth = maxHealth;
         spriteRenderer = GetComponentInChildren<SpriteRenderer>();
         originalScaleX = transform.localScale.x;
+
+        audioSource = GetComponent<AudioSource>();
+        if (audioSource == null)
+            audioSource = gameObject.AddComponent<AudioSource>();
     }
 
     void Start()
@@ -96,6 +103,9 @@ void Update()
         anim.SetTrigger("Die");
         GameManager.I.EarnCoins(rewardCoins);  // << now reward by type
         StartCoroutine(DestroyAfterDeath());
+
+        if (EnemyDieSFX != null && audioSource != null)
+        audioSource.PlayOneShot(EnemyDieSFX);
     }
 
     private IEnumerator DestroyAfterDeath()
