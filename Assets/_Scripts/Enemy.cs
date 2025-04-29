@@ -41,33 +41,43 @@ public class Enemy : MonoBehaviour
         checkpoint = WaveManager.I.checkpoints[index];
     }
 
-    void Update()
+void Update()
+{
+    if (isDying) return;
+
+    if (index >= WaveManager.I.checkpoints.Length)
+        return;
+
+    checkpoint = WaveManager.I.checkpoints[index];
+
+    Vector2 dir = ((Vector2)checkpoint.position - (Vector2)transform.position).normalized;
+    rb.linearVelocity = dir * Mathf.Min(speed, 20f);
+
+    // Flip sprite only if moving mostly horizontally
+    if (Mathf.Abs(dir.x) > Mathf.Abs(dir.y))
     {
-        if (isDying) return;
-        checkpoint = WaveManager.I.checkpoints[index];
-
-        if (Vector2.Distance(transform.position, checkpoint.position) <= 0.1f)
-        {
-            index++;
-            if (index >= WaveManager.I.checkpoints.Length)
-            {
-                GameManager.I.DamagePlayer(damage);
-                Destroy(gameObject);
-                return;
-            }
-            checkpoint = WaveManager.I.checkpoints[index];
-        }
-
-        // move only—no rotation
-        Vector2 dir = ((Vector2)checkpoint.position - (Vector2)transform.position).normalized;
-        rb.linearVelocity = dir * speed;
-        if (dir.x < -0.01f)
+        if (dir.x < 0f)
             transform.localScale = new Vector3(-originalScaleX, transform.localScale.y, transform.localScale.z);
-        else if (dir.x > 0.01f)
+        else
             transform.localScale = new Vector3(originalScaleX, transform.localScale.y, transform.localScale.z);
-        bool walking = rb.linearVelocity.sqrMagnitude > 0.01f;
-        anim.SetBool("isWalking", walking);
     }
+
+    // 🚀 Check simple distance to checkpoint
+    if (Vector2.Distance(transform.position, checkpoint.position) < 0.2f)
+    {
+        index++;
+
+        // If we're out of checkpoints -> reached end
+        if (index >= WaveManager.I.checkpoints.Length)
+        {
+            GameManager.I.DamagePlayer(damage);
+            Destroy(gameObject);
+        }
+    }
+
+    bool walking = rb.linearVelocity.sqrMagnitude > 0.01f;
+    anim.SetBool("isWalking", walking);
+}
 
     public void TakeDamage(int amount)
     {

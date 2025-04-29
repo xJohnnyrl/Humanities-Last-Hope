@@ -43,30 +43,42 @@ public IEnumerator SpawnWave(int enemyCount, float enemySpeed, float spawnInterv
     enemiesRemainingInWave = enemyCount;
     GameManager.I.UpdateEnemiesLeftCounter();
 
-    // --- Handle unlocking new enemies ---
     UpdateAvailableEnemies();
 
-    for (int i = 0; i < enemyCount; i++)
+    int batchSize = 3; // ✅ How many enemies to spawn at once
+    int enemiesSpawned = 0;
+
+    while (enemiesSpawned < enemyCount)
     {
-        var chosenType = availableEnemies[UnityEngine.Random.Range(0, availableEnemies.Count)];
+        int spawnThisBatch = Mathf.Min(batchSize, enemyCount - enemiesSpawned); // in case we're near the end
 
-        var go = Instantiate(chosenType.prefab, spawnPoint.position, Quaternion.identity);
+        for (int j = 0; j < spawnThisBatch; j++)
+        {
+            var chosenType = availableEnemies[UnityEngine.Random.Range(0, availableEnemies.Count)];
+            var go = Instantiate(chosenType.prefab, spawnPoint.position, Quaternion.identity);
 
-        if (enemyContainer != null)
-            go.transform.SetParent(enemyContainer, worldPositionStays: true);
+            if (enemyContainer != null)
+                go.transform.SetParent(enemyContainer, worldPositionStays: true);
 
-        SetLayerRecursively(go, enemyLayer);
+            SetLayerRecursively(go, enemyLayer);
 
-        var e = go.GetComponent<Enemy>();
-        float baseSpeed = e.speed;
-        float multiplier = GetEnemyStatMultiplier();
-        float scaledSpeed = baseSpeed * multiplier;
+            var e = go.GetComponent<Enemy>();
+            float baseSpeed = e.speed;
+            float hpMultiplier = GetHpMultiplier();
+            float speedMultiplier = GetSpeedMultiplier();
+            float scaledSpeed = baseSpeed * speedMultiplier;
 
-        e.Init(scaledSpeed, Mathf.RoundToInt(chosenType.rewardCoins * multiplier), Mathf.RoundToInt(chosenType.damage * multiplier));
+            e.Init(Mathf.Min(scaledSpeed, 20f),
+                   Mathf.RoundToInt(chosenType.rewardCoins * hpMultiplier),
+                   Mathf.RoundToInt(chosenType.damage * hpMultiplier));
 
-        active.Add(e);
-        GameManager.I.UpdateEnemiesLeftCounter();
-        yield return new WaitForSeconds(spawnInterval);
+            active.Add(e);
+            GameManager.I.UpdateEnemiesLeftCounter();
+
+            enemiesSpawned++;
+        }
+
+        yield return new WaitForSeconds(spawnInterval); // wait between *batches* now
     }
 
     while (active.Count > 0)
@@ -74,6 +86,7 @@ public IEnumerator SpawnWave(int enemyCount, float enemySpeed, float spawnInterv
 
     GameManager.I.WaveComplete();
 }
+
 
 private void UpdateAvailableEnemies()
 {
@@ -125,10 +138,16 @@ private void UpdateAvailableEnemies()
     }
 }
 
-private float GetEnemyStatMultiplier()
+private float GetHpMultiplier()
 {
     int wave = GameManager.I.currentWave;
-    return Mathf.Pow(1.5f, wave / 2);
+    return Mathf.Pow(2.5f, wave / 2);
+}
+
+private float GetSpeedMultiplier()
+{
+    int wave = GameManager.I.currentWave;
+    return Mathf.Pow(1.5f, wave / 4);
 }
 
 public void NotifyEnemyDeath(Enemy e)
