@@ -54,17 +54,53 @@ public class CardShop : MonoBehaviour
 
 private void SpawnCards()
 {
-    // 1. Make a copy of the available cards
-    List<Card> availableCards = new List<Card>(cardPrefabs);
+    List<Card> availableCards = new List<Card>();
 
-    // 2. Shuffle them
+    foreach (Card card in cardPrefabs)
+    {
+        // Wave 0–10: Only Rare cards
+        if (GameManager.I.currentWave <= 10)
+        {
+            if (card.rarity == Rarity.Rare)
+                availableCards.Add(card);
+        }
+        // Wave 11–20: Rare + Epic (higher chance for Epic)
+        else if (GameManager.I.currentWave <= 20)
+        {
+            if (card.rarity == Rarity.Rare || card.rarity == Rarity.Epic)
+            {
+                // Bias Epic cards to appear more often
+                if (card.rarity == Rarity.Epic)
+                    availableCards.Add(card); // Add twice for higher chance
+                availableCards.Add(card);
+            }
+        }
+        // Wave 21+: Rare + Epic + Legendary (higher chance for Legendary)
+        else
+        {
+            if (card.rarity == Rarity.Rare || card.rarity == Rarity.Epic || card.rarity == Rarity.Legendary)
+            {
+                if (card.rarity == Rarity.Legendary)
+                    availableCards.Add(card); // Add twice for higher chance
+                availableCards.Add(card);
+            }
+        }
+    }
+
+    if (availableCards.Count == 0)
+    {
+        Debug.LogWarning("No available cards for the current wave settings!");
+        return;
+    }
+
+    // Shuffle the available cards
     for (int i = 0; i < availableCards.Count; i++)
     {
         int randomIndex = Random.Range(i, availableCards.Count);
         (availableCards[i], availableCards[randomIndex]) = (availableCards[randomIndex], availableCards[i]);
     }
 
-    // 3. Take the first 'cardsToSpawn' cards
+    // Spawn the cards
     for (int i = 0; i < cardsToSpawn && i < availableCards.Count; i++)
     {
         Card randomCard = availableCards[i];
@@ -79,6 +115,7 @@ private void SpawnCards()
         }
     }
 }
+
 
 
     private void ClearCards()

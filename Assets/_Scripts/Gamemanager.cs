@@ -4,6 +4,8 @@ using System.Collections;
 
 public class GameManager : MonoBehaviour
 {
+    [SerializeField] GameObject gameoverscreen;
+    [SerializeField] GameObject darkbackground;
     public static GameManager I { get; private set; }
 
     [Header("Player Stats")]
@@ -50,7 +52,11 @@ public class GameManager : MonoBehaviour
     {
         health -= dmg;
         OnStatsChanged?.Invoke();
-        if (health <= 0) {/* handle game over */}
+        if (health <= 0) {
+            gameoverscreen.SetActive(true);
+            darkbackground.SetActive(true);
+            Time.timeScale = 0;
+        }
     }
 
     public bool SpendCoins(int amount)
