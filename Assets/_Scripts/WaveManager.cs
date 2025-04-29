@@ -68,20 +68,20 @@ public IEnumerator SpawnWave(int enemyCount, float enemySpeed, float spawnInterv
             float speedMultiplier = GetSpeedMultiplier();
             float scaledSpeed = baseSpeed * speedMultiplier;
 
-            e.Init(Mathf.Min(scaledSpeed, 20f),
+            e.Init(
+                Mathf.Min(scaledSpeed, 20f),
                 chosenType.rewardCoins,
                 chosenType.damage,
-                hpMultiplier 
-                );
-
+                hpMultiplier
+            );
 
             active.Add(e);
             GameManager.I.UpdateEnemiesLeftCounter();
 
             enemiesSpawned++;
-        }
 
-        yield return new WaitForSeconds(spawnInterval); // wait between *batches* now
+            yield return new WaitForSeconds(0.15f); // ✅ small delay between enemies in batch
+        }
     }
 
     while (active.Count > 0)
@@ -144,7 +144,7 @@ private void UpdateAvailableEnemies()
 private float GetHpMultiplier()
 {
     int wave = GameManager.I.currentWave;
-    return Mathf.Pow(1.5f, wave / 2);
+    return Mathf.Pow(1.25f, wave / 3);
 }
 
 private float GetSpeedMultiplier()
