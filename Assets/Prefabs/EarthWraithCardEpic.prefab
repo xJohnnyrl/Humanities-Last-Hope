@@ -107,12 +107,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a35b7a24f4fc8ee4ea5e77c5ff8f2a8a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  towerPrefab: {fileID: 5539103568891418368, guid: 3d305abf938dfc84d8bf1b91d8a11a3a,
+  towerPrefab: {fileID: 4957364913877115517, guid: b9e60faa8ab3899479b09dd2a07133b6,
     type: 3}
-  previewPrefab: {fileID: 5539103568891418368, guid: d841cb2a13095944984f78a12dc96aec,
+  previewPrefab: {fileID: 4957364913877115517, guid: 94fa392225792484198a53d39beb5f04,
     type: 3}
-  cardName: Ice wraith
-  rarity: 0
+  cardName: Earth wraith
+  rarity: 1
   cost: 28
   artwork: {fileID: 4620490624171783195, guid: b2aa2179b98b6dc4e9be54c7b12fc086, type: 3}
 --- !u!114 &882059350608718965

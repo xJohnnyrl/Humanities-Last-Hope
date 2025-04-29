@@ -42,30 +42,30 @@ public class HandManager : MonoBehaviour
         
     }
 
-    public void ReceiveCard(Card cardData)
+public void ReceiveCard(Card cardData, GameObject prefabToSpawn)
 {
     if (cardsInHand.Count >= maxHandSize) return;
 
-        // 1) instantiate the generic prefab
-    GameObject card = Instantiate(cardPrefab, spawnPoint.position, spawnPoint.rotation);
+    // 1) instantiate the specific prefab we passed in
+    GameObject card = Instantiate(prefabToSpawn, spawnPoint.position, spawnPoint.rotation);
     cardsInHand.Add(card);
 
-    // Optional: Update the card's appearance if you want
+    // Optional: Update the card's appearance
     var cardUI = card.GetComponent<UICard>();
     if (cardUI != null)
         cardUI.Setup(cardData, null); // no shop needed
 
-
-        // 2) assign its sorting order
+    // 2) assign its sorting order
     var sg = card.GetComponent<SortingGroup>();
     if (sg != null)
         sg.sortingOrder = cardBaseOrder + (cardsInHand.Count - 1);
 
-        Debug.LogWarning($"Updating card position, {cardsInHand.Count} cards in hand");
+    Debug.LogWarning($"Updating card position, {cardsInHand.Count} cards in hand");
 
-        // 3) re-layout
+    // 3) re-layout
     UpdateCardPosition();
 }
+
 
     /// <summary>
     /// Call this to give the user back the exact card they cancelled.

@@ -34,7 +34,7 @@ public class Tower : MonoBehaviour
         }
 
         // 1) set the actual tower range
-        rangeIndicator.radius = range;
+        rangeIndicator.radius = range / transform.lossyScale.x;
 
         // 2) rebuild the circle mesh
         rangeIndicator.DrawCircle();
@@ -44,77 +44,80 @@ public class Tower : MonoBehaviour
     }
     void Update()
     {
-        cooldown -= Time.deltaTime;
+    cooldown -= Time.deltaTime;
 
-        if (cooldown <= 0f)
+    if (cooldown <= 0f)
+    {
+        Enemy target = FindNearestEnemy();
+        if (target != null)
         {
-            Enemy target = FindNearestEnemy();
-            if (target != null)
-            {
-                Debug.Log($"[Tower] cooldown ready, found target = {target}");
-                Shoot(target);
-                cooldown = 1f / fireRate;
-            }
-            else
-            {
-                // optionally go back to idle
-                anim.ResetTrigger("Attack");
-                anim.Play("Idle", 0);
-            }
+            Debug.Log($"[Tower] cooldown ready, found target = {target}");
+            Shoot(target);
         }
+        else
+        {
+            anim.ResetTrigger("Attack");
+            anim.Play("Idle", 0);
+        }
+
+        // Reset cooldown AFTER trying
+        cooldown = 1f / fireRate;
+    }
     }
 
 Enemy FindNearestEnemy()
 {
-    // Grab all colliders in range (no mask)
-        Vector2 center = (rangeIndicator.rangeOrigin != null)
-            ? (Vector2)rangeIndicator.rangeOrigin.position
-            : (Vector2)transform.position;
+    Vector2 center = (rangeIndicator.rangeOrigin != null)
+        ? (Vector2)rangeIndicator.rangeOrigin.position
+        : (Vector2)transform.position;
 
-        Collider2D[] hits = Physics2D.OverlapCircleAll(center, range);
+    Collider2D[] hits = Physics2D.OverlapCircleAll(center, range); // no scaling here!
 
-        Enemy  nearest = null;
-        float  bestSq  = float.MaxValue;
+    Enemy nearest = null;
+    float bestSq = float.MaxValue;
 
-        foreach (var hit in hits)
-        {
-            if (!hit.CompareTag("Enemy")) continue;
-
-            Enemy e = hit.GetComponent<Enemy>() 
-                   ?? hit.GetComponentInParent<Enemy>();
-            if (e == null) continue;
-
-            float sq = (e.transform.position - (Vector3)center).sqrMagnitude;
-            if (sq < bestSq)
-            {
-                bestSq  = sq;
-                nearest = e;
-            }
-        }
-
-        return nearest;
-}
-
-    void Shoot(Enemy target)
+    foreach (var hit in hits)
     {
-        // flip sprite to face
-        bool left = target.transform.position.x < transform.position.x;
-        
-        Vector3 s = transform.localScale;
-        s.x = Mathf.Abs(s.x) * (left ? -1 : 1);
-        transform.localScale = s;
+        if (!hit.CompareTag("Enemy")) continue;
 
-        // play attack animation (trigger “Attack” must be set up in your Animator)
-        anim.SetTrigger("Attack");
+        Enemy e = hit.GetComponent<Enemy>() ?? hit.GetComponentInParent<Enemy>();
+        if (e == null) continue;
 
-        // spawn and initialize projectile
-        if (projectilePrefab && firePoint)
+        float sq = (e.transform.position - (Vector3)center).sqrMagnitude;
+        if (sq < bestSq)
         {
-            var go = Instantiate(projectilePrefab, firePoint.position, Quaternion.identity);
-            var p  = go.GetComponent<Projectile>();
-            if (p != null) p.Initialize(target, damage);
+            bestSq = sq;
+            nearest = e;
         }
     }
+
+    return nearest;
+}
+
+void Shoot(Enemy target)
+{
+    // flip sprite to face target
+    bool left = target.transform.position.x < transform.position.x;
+        
+    Vector3 s = transform.localScale;
+    s.x = Mathf.Abs(s.x) * (left ? -1 : 1);
+    transform.localScale = s;
+
+    anim.SetTrigger("Attack");
+
+    if (projectilePrefab && firePoint)
+    {
+        var go = Instantiate(projectilePrefab, firePoint.position, Quaternion.identity);
+        
+        var p = go.GetComponent<Projectile>();
+        if (p != null) p.Initialize(target, damage);
+
+        // 👉 FLIP the projectile based on tower facing
+        Vector3 projScale = go.transform.localScale;
+        projScale.x = Mathf.Abs(projScale.x) * (left ? -1 : 1);
+        go.transform.localScale = projScale;
+    }
+}
 
     // visualize range in the editor
     void OnDrawGizmosSelected()

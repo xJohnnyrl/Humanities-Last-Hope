@@ -124,7 +124,7 @@ private void SpawnCards()
         confirmPanel.SetActive(false);
 
         // Add the card to the hand manager
-        handManager.ReceiveCard(selectedCard);
+        handManager.ReceiveCard(selectedCard, selectedCard.gameObject);
 
         // Remove the card from the shop
         Destroy(selectedCardGO);

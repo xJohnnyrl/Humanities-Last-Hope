@@ -107,11 +107,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a35b7a24f4fc8ee4ea5e77c5ff8f2a8a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  towerPrefab: {fileID: 5539103568891418368, guid: 3d305abf938dfc84d8bf1b91d8a11a3a,
+  towerPrefab: {fileID: 4546954367047260722, guid: 2cfc9d416662ab04b9c59877e16edf20,
     type: 3}
-  previewPrefab: {fileID: 5539103568891418368, guid: d841cb2a13095944984f78a12dc96aec,
+  previewPrefab: {fileID: 4546954367047260722, guid: 3f554f3c173fe154a9eb28086bb7080e,
     type: 3}
-  cardName: Ice wraith
+  cardName: Mythical Oracle
   rarity: 0
   cost: 20
   artwork: {fileID: -350752729771359473, guid: 411b977737f80464e9aa0c263e2edac1, type: 3}
