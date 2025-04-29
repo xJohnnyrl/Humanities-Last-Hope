@@ -16,7 +16,15 @@ public class Enemy : MonoBehaviour
     private SpriteRenderer spriteRenderer;
     private float originalScaleX;
 
-    public void Init(float speed) => this.speed = speed;
+    private int rewardCoins = 1;
+    private int damage = 1;
+
+    public void Init(float speed, int rewardCoins, int damage)
+    {
+        this.speed = speed;
+        this.rewardCoins = rewardCoins;
+        this.damage = damage;
+    }
 
     void Awake()
     {
@@ -43,7 +51,7 @@ public class Enemy : MonoBehaviour
             index++;
             if (index >= WaveManager.I.checkpoints.Length)
             {
-                GameManager.I.DamagePlayer(1);
+                GameManager.I.DamagePlayer(damage);
                 Destroy(gameObject);
                 return;
             }
@@ -74,7 +82,7 @@ public class Enemy : MonoBehaviour
         isDying = true;
         rb.linearVelocity = Vector2.zero;
         anim.SetTrigger("Die");
-        GameManager.I.EarnCoins(1);
+        GameManager.I.EarnCoins(rewardCoins);  // << now reward by type
         StartCoroutine(DestroyAfterDeath());
     }
 

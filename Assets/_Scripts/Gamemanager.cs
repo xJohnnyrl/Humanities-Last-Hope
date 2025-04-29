@@ -1,6 +1,7 @@
 using UnityEngine;
 using System;
 using System.Collections;
+using TMPro;
 
 public class GameManager : MonoBehaviour
 {
@@ -20,7 +21,9 @@ public class GameManager : MonoBehaviour
     public event Action OnWaveEnded;
     public event Action OnEnterShop;
     public event Action OnStatsChanged;
-
+    [Header("UI References")]
+    [SerializeField] private TMP_Text waveCounterText;
+    [SerializeField] private TMP_Text enemiesLeftText;
     private void Awake()
     {
         I = this;
@@ -31,23 +34,25 @@ public class GameManager : MonoBehaviour
         NextWave();
     }
 
-    public void NextWave()
-    {
-        currentWave++;
-        OnWaveStarted?.Invoke();
-        StartCoroutine(WaveManager.I.SpawnWave(
-            enemyCount: 5 + currentWave * 2,
-            enemySpeed: 2f + currentWave * 0.2f,
-            spawnInterval: spawnInterval
-        ));
-    }
+public void NextWave()
+{
+    currentWave++;
+    UpdateWaveCounter();
+    UpdateEnemiesLeftCounter();
 
-    public void WaveComplete()
-    {
-        OnWaveEnded?.Invoke();
-        OnEnterShop?.Invoke();
-    }
-
+    OnWaveStarted?.Invoke();
+    StartCoroutine(WaveManager.I.SpawnWave(
+        enemyCount: 5 + currentWave * 2,
+        enemySpeed: 2f + currentWave * 0.2f,
+        spawnInterval: spawnInterval
+    ));
+}
+public void WaveComplete()
+{
+    UpdateEnemiesLeftCounter();
+    OnWaveEnded?.Invoke();
+    OnEnterShop?.Invoke();
+}
     public void DamagePlayer(int dmg)
     {
         health -= dmg;
@@ -71,4 +76,19 @@ public class GameManager : MonoBehaviour
         coins += amount;
         OnStatsChanged?.Invoke();
     }
+
+    public void UpdateWaveCounter()
+{
+    if (waveCounterText != null)
+        waveCounterText.text = $"Wave {currentWave}";
+}
+
+public void UpdateEnemiesLeftCounter()
+{
+    if (enemiesLeftText != null)
+    {
+        int enemiesLeft = WaveManager.I.GetAliveEnemyCount();
+        enemiesLeftText.text = $"Enemies Left: {enemiesLeft}";
+    }
+}
 }
